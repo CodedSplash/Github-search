@@ -32,6 +32,10 @@ $mobileSmall: math.div(479.98, 16) + em; // Телефоны S
 
 //=== Cards =====================================================================================================================================================
 
+main {
+  padding-bottom: math.div(24, 16) + rem;
+}
+
 .card-body {
   display: flex;
   justify-content: space-between;
