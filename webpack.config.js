@@ -12,8 +12,7 @@ module.exports = {
     target,
     devtool,
     devServer: {
-        open: true,
-        hot: true
+        open: true
     },
     entry: path.resolve("@babel/polyfill", __dirname, 'src', 'index.js'),
     output: {
