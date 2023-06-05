@@ -23,10 +23,16 @@ $mobileSmall: math.div(479.98, 16) + em; // Телефоны S
 .header {
   padding: math.div(15, 16) + rem 0;
 
-  // .header__tilte
-  &__tilte {
+  // .header__title
+  &__title {
     text-align: center;
     padding-bottom: math.div(10, 16) + rem;
+  }
+
+  // .header__btn
+  &__btn {
+    display: flex;
+    align-items: center;
   }
 }
 
@@ -34,6 +40,10 @@ $mobileSmall: math.div(479.98, 16) + em; // Телефоны S
 
 main {
   padding-bottom: math.div(24, 16) + rem;
+}
+
+.card {
+  overflow: hidden;
 }
 
 .card-body {
