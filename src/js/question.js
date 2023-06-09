@@ -47,7 +47,7 @@ export class Question {
         `
         : '';
 
-        const paginationContainer = document.querySelector('.repositories-container');
+        const paginationContainer = document.querySelector('.pagination-container');
         paginationContainer.innerHTML = html;
 
         const paginationButtons = document.querySelectorAll('.page-link');
