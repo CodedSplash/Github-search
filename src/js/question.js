@@ -1,18 +1,62 @@
 export class Question {
     static create(url) {
         return fetch(url)
+            .then(response => {
+                if (response.status === 403) throw 'Вы превысили лимит запросов. Подождите какое-то время и попробуйте сделать запрос снова.';
+                return response;
+            })
             .then(response => response.json());
     }
-    static renderList(response) {
-        const questions = response;
+    static renderList(repositoryList, currentPage) {
+        const repositories = repositoryList;
 
-        const html = questions.length
-            ? questions.map(toCard).join('')
+        const start = currentPage === 1 ? 0 : (currentPage * 10) - 10;
+        const end = start + 10;
+        const outputRepositories = repositories.slice(start, end);
+
+        const html = repositories.length
+            ? outputRepositories.map(toCard).join('')
             : `<p style="font-size: 24px">Ничего не найдено</p>`;
 
         const list = document.querySelector('.row');
-
         list.innerHTML = html;
+    }
+
+    static renderPagination(currentPage, totalPages, repositoryList) {
+        const html = repositoryList.length
+            ? `
+            <ul class="pagination justify-content-center">
+                <li class="page-item"><button class="page-link${currentPage === 1 ? ' disabled' : ''}" data-page="${currentPage - 1}" ${currentPage === 1 ? 'disabled' : ''}>Назад</button></li>
+                ${currentPage > 4
+                ? `
+                        <li class="page-item"><button class="page-link" data-page="1" aria-label="Страница 1">1</button></li>
+                        <li class="page-item"><span class="page-link disabled" aria-label="Троеточие">...</span></li>
+                    `
+                : ''
+            }
+                ${toButtonsPagination(currentPage, totalPages)}
+                ${currentPage < totalPages - 3
+                ? `
+                        <li class="page-item"><span class="page-link disabled" aria-label="Троеточие">...</span></li>
+                        <li class="page-item"><button class="page-link" data-page="${totalPages}" aria-label="Страница ${totalPages}">${totalPages}</button></li>
+                    `
+                : ''
+            }
+                <li class="page-item"><button class="page-link${currentPage === totalPages ? ' disabled' : ''}" data-page="${currentPage + 1}" ${currentPage === totalPages ? 'disabled' : ''}>Вперёд</button></li>
+            </ul>
+        `
+        : '';
+
+        const paginationContainer = document.querySelector('.repositories-container');
+        paginationContainer.innerHTML = html;
+
+        const paginationButtons = document.querySelectorAll('.page-link');
+        paginationButtons.forEach(btn => btn.addEventListener('click', (event) => {
+            const selectedPage = Number(event.target.getAttribute('data-page'));
+            document.body.scrollTop = document.documentElement.scrollTop = 0;
+            Question.renderList(repositoryList, selectedPage);
+            Question.renderPagination(selectedPage, totalPages, repositoryList);
+        }))
     }
 }
 
@@ -32,7 +76,7 @@ function toCard(question) {
                                     </div>
                                 </div>
                             </h3>
-                            ${question.description ? `<p class="card-text">${question.description}</p>` : ''}
+                            ${question.description ? `<p class="card-text">${question.description.replaceAll('</', '').replaceAll('<', '').replaceAll('>', '')}</p>` : ''}
                             ${question.topics.length
                                 ? `<div class="card-topics">${question.topics.map((topic, index)  => toBadge(topic, index)).join('')}</div>`
                                 : ''
@@ -81,12 +125,58 @@ function toBadge(topic, index) {
         : '';
 }
 
+function toButtonsPagination(currentPage, totalPages) {
+    const outputPages = [
+        currentPage - 2,
+        currentPage - 1,
+        currentPage,
+        currentPage + 1,
+        currentPage + 2
+    ];
+    if (totalPages < 6) {
+        let outputRepositories = [];
+        for (let i = 0; i < totalPages; i++) {
+            outputRepositories.push(`
+                <li class="page-item"><button class="page-link${currentPage === i + 1 ? ' active' : ''}" data-page="${i + 1}" aria-label="Страница ${i + 1}">${i + 1}</button></li>
+            `);
+        }
+        return outputRepositories.join('');
+    }
+    if (currentPage > 4 && !(currentPage >= totalPages - 3)) {
+        return `
+            <li class="page-item"><button class="page-link" data-page="${outputPages[0]}" aria-label="Страница ${outputPages[0]}">${outputPages[0]}</button></li>
+            <li class="page-item"><button class="page-link" data-page="${outputPages[1]}" aria-label="Страница ${outputPages[1]}">${outputPages[1]}</button></li>
+            <li class="page-item"><button class="page-link active" data-page="${outputPages[2]}" aria-label="Страница ${outputPages[2]}">${outputPages[2]}</button></li>
+            <li class="page-item"><button class="page-link" data-page="${outputPages[3]}" aria-label="Страница ${outputPages[3]}">${outputPages[3]}</button></li>
+            <li class="page-item"><button class="page-link" data-page="${outputPages[4]}" aria-label="Страница ${outputPages[4]}">${outputPages[4]}</button></li>
+        `;
+    }
+    if (currentPage >= totalPages - 3) {
+        return `
+            <li class="page-item"><button class="page-link${currentPage === totalPages - 5 ? ' active' : ''}" data-page="${totalPages - 5}" aria-label="Страница ${totalPages - 5}">${totalPages - 5}</button></li>
+            <li class="page-item"><button class="page-link${currentPage === totalPages - 4 ? ' active' : ''}" data-page="${totalPages - 4}" aria-label="Страница ${totalPages - 4}">${totalPages - 4}</button></li>
+            <li class="page-item"><button class="page-link${currentPage === totalPages - 3 ? ' active' : ''}" data-page="${totalPages - 3}" aria-label="Страница ${totalPages - 3}">${totalPages - 3}</button></li>
+            <li class="page-item"><button class="page-link${currentPage === totalPages - 2 ? ' active' : ''}" data-page="${totalPages - 2}" aria-label="Страница ${totalPages - 2}">${totalPages - 2}</button></li>
+            <li class="page-item"><button class="page-link${currentPage === totalPages - 1 ? ' active' : ''}" data-page="${totalPages - 1}" aria-label="Страница ${totalPages - 1}">${totalPages - 1}</button></li>
+            <li class="page-item"><button class="page-link${currentPage === totalPages ? ' active' : ''}" data-page="${totalPages}" aria-label="Страница ${totalPages}">${totalPages}</button></li>
+        `;
+    }
+    return `
+        <li class="page-item"><button class="page-link${currentPage === 1 ? ' active' : ''}" data-page="1" aria-label="Страница 1">1</button></li>
+        <li class="page-item"><button class="page-link${currentPage === 2 ? ' active' : ''}" data-page="2" aria-label="Страница 2">2</button></li>
+        <li class="page-item"><button class="page-link${currentPage === 3 ? ' active' : ''}" data-page="3" aria-label="Страница 3">3</button></li>
+        <li class="page-item"><button class="page-link${currentPage === 4 ? ' active' : ''}" data-page="4" aria-label="Страница 4">4</button></li>
+        <li class="page-item"><button class="page-link${currentPage === 5 ? ' active' : ''}" data-page="5" aria-label="Страница 5">5</button></li>
+        <li class="page-item"><button class="page-link${currentPage === 6 ? ' active' : ''}" data-page="6" aria-label="Страница 6">6</button></li>
+    `;
+}
+
 function getStars(starsNumber) {
     if (starsNumber > 1000) return Math.floor(starsNumber / 1000) + 'k';
     if (starsNumber < 1000) return starsNumber;
 }
 
-const fixDate = date => date.replace('Z', '');
+const fixDate = date => date !== null ? date.replace('Z', '') : new Date(0);
 const getLastUpdate = date => isYear(fixDate(date))
     || isMonth(fixDate(date))
     || isDay(fixDate(date))

@@ -34,12 +34,19 @@ $mobileSmall: math.div(479.98, 16) + em; // Телефоны S
     display: flex;
     align-items: center;
   }
+
+  // .header__error
+  &__error  {
+    padding-top: math.div(6, 16) + rem;
+  }
 }
 
 //=== Cards =====================================================================================================================================================
 
-main {
-  padding-bottom: math.div(24, 16) + rem;
+.repositories {
+  & .row {
+    padding-bottom: math.div(24, 16) + rem;
+  }
 }
 
 .card {
@@ -190,4 +197,9 @@ a {
     display: flex;
     align-items: center;
   }
+}
+
+.pagination {
+  flex-wrap: wrap;
+  row-gap: math.div(15, 16) + rem;
 }
