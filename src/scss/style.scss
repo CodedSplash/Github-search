@@ -225,3 +225,7 @@ a {
   flex-wrap: wrap;
   row-gap: math.div(15, 16) + rem;
 }
+
+.offcanvas.offcanvas-start {
+  width: math.div(500, 16) + rem !important;
+}

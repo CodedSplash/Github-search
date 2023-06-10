@@ -7,6 +7,7 @@ import {
     isDisabledButton,
     isValidValue
 } from "./utils";
+import {Repository} from "./repository";
 
 
 const inputElement = document.getElementById('search-input');
@@ -15,6 +16,8 @@ const formElement = document.getElementById('form-search');
 const outputError = document.querySelector('.header__error');
 
 formElement.addEventListener('submit', submitFormHandler);
+document.addEventListener('DOMContentLoaded', event =>
+    Repository.renderList(JSON.parse(localStorage.getItem('repositories'))));
 
 let fullListRepositories = [];
 let totalQueryPages = 1;
@@ -58,6 +61,7 @@ function submitFormHandler(event) {
                 changeButtonSearch(sendElement, 'search');
                 isDisabledButton(sendElement);
             })
+            .then(response => Repository.addToLocaleStorage(fullListRepositories))
             .catch(e => {
                 outputError.innerText = e;
                 changeButtonSearch(sendElement, 'search');
