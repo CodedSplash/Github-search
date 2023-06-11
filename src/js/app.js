@@ -15,14 +15,16 @@ const sendElement = document.getElementById('search-button');
 const formElement = document.getElementById('form-search');
 const outputError = document.querySelector('.header__error');
 
-formElement.addEventListener('submit', submitFormHandler);
 document.addEventListener('DOMContentLoaded', event =>
     Repository.renderList(JSON.parse(localStorage.getItem('repositories'))));
+
+formElement.addEventListener('submit', submitFormHandler);
 
 let fullListRepositories = [];
 let totalQueryPages = 1;
 let totalPages = 1;
 let currentPage = 1;
+
 
 function submitFormHandler(event) {
     event.preventDefault();

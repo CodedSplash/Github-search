@@ -1,4 +1,5 @@
 import {getLastUpdate, getStars, toBadge} from "./cardFunctions";
+import {Repository} from "./repository";
 
 export class Question {
     static create(url) {
@@ -22,6 +23,8 @@ export class Question {
 
         const list = document.querySelector('.row');
         list.innerHTML = html;
+
+        Repository.addToLocaleStorage(repositoryList);
     }
 
     static renderPagination(currentPage, totalPages, repositoryList) {

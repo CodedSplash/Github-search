@@ -2,11 +2,11 @@ import {getLastUpdate, getStars, toBadge} from "./cardFunctions";
 
 export class Repository {
     static addToLocaleStorage(fullListRepositories) {
-        let saveRepositories = JSON.parse(localStorage.getItem('repositories') || '[]');
         const saveButtons = document.querySelectorAll('.card-buttons__btn-save');
         let repository = {};
         saveButtons.forEach(btn => {
             btn.addEventListener('click', event => {
+                let saveRepositories = JSON.parse(localStorage.getItem('repositories') || '[]');
                 let isAdd = true;
                 repository = getRepositoryObj(fullListRepositories, getRepositoryId(event));
                 saveRepositories.forEach(rep => {
@@ -21,16 +21,34 @@ export class Repository {
         });
     }
 
-    static renderList(saveListRepositories) {
-        const repositories = saveListRepositories;
+    static removeRepository() {
+        let saveRepositories = JSON.parse(localStorage.getItem('repositories'));
+        const removeButtons = document.querySelectorAll('.card-buttons__btn-remove');
+        removeButtons.forEach(btn => {
+            btn.addEventListener('click', event => {
+                const repositoryId = getRepositoryId(event);
+                saveRepositories.forEach((rep, index) => {
+                    if (rep.id === repositoryId) {
+                        saveRepositories.splice(index, 1);
+                        localStorage.setItem('repositories', JSON.stringify(saveRepositories));
+                        Repository.renderList(saveRepositories);
+                    }
+                });
+            });
+        });
+    }
 
-        const html = repositories !== null
+    static renderList(saveListRepositories) {
+        const repositories = saveListRepositories || [];
+
+        const html = JSON.stringify(repositories) !== '[]'
             ? repositories.map(toCard).join('')
             : `<p>Список пустой.</p>`;
 
         const list = document.querySelector('.saved-repositories__body');
 
         list.innerHTML = html;
+        Repository.removeRepository();
     }
 }
 
@@ -75,7 +93,7 @@ function toCard(repository) {
                         </div>
                     </div>
                     <div class="card-buttons"></div>
-                    <button type="button" class="btn-close card-buttons__btn card-buttons__btn-close" aria-label="Close"></button>
+                    <button type="button" class="btn-close card-buttons__btn card-buttons__btn-remove" aria-label="Close"></button>
                 </div>
             </div>
         </div>
