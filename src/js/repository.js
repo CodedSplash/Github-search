@@ -1,4 +1,5 @@
 import {getLastUpdate, getStars, toBadge} from "./cardFunctions";
+import {Question} from "./question";
 
 export class Repository {
     static addToLocaleStorage(fullListRepositories) {
@@ -16,6 +17,7 @@ export class Repository {
                     saveRepositories.push(repository);
                     localStorage.setItem('repositories', JSON.stringify(saveRepositories));
                     Repository.renderList(saveRepositories);
+                    Question.renderList(fullListRepositories, getCurrentPage());
                 }
             });
         });
@@ -106,4 +108,8 @@ function getRepositoryId(event) {
 
 function getRepositoryObj(fullListRepositories, id) {
     return fullListRepositories.find(rep => rep.id === id);
+}
+
+function getCurrentPage() {
+    return Number(document.querySelector('.page-link.active').getAttribute('data-page'));
 }
