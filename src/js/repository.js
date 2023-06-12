@@ -1,56 +1,75 @@
-import {getLastUpdate, getStars, toBadge} from "./cardFunctions";
+import {
+    getLastUpdate,
+    getStars,
+    toBadge,
+    getRepositoryId,
+    getRepositoryObj,
+    getCurrentPage
+} from "./utils";
 import {Question} from "./question";
 
 export class Repository {
     static addToLocaleStorage(fullListRepositories) {
         const saveButtons = document.querySelectorAll('.card-buttons__btn-save');
-        let repository = {};
         saveButtons.forEach(btn => {
             btn.addEventListener('click', event => {
                 let saveRepositories = JSON.parse(localStorage.getItem('repositories') || '[]');
+                const repository = getRepositoryObj(fullListRepositories, getRepositoryId(event));
                 let isAdd = true;
-                repository = getRepositoryObj(fullListRepositories, getRepositoryId(event));
-                saveRepositories.forEach(rep => {
-                    if (JSON.stringify(rep) === JSON.stringify(repository)) isAdd = false;
-                })
+                let repositoryIndex = 0;
+                saveRepositories.forEach((rep, index) => {
+                    if (rep.id === repository.id) {
+                        repositoryIndex = index;
+                        isAdd = false;
+                    }
+                });
                 if (isAdd) {
                     saveRepositories.push(repository);
                     localStorage.setItem('repositories', JSON.stringify(saveRepositories));
-                    Repository.renderList(saveRepositories);
+                    Repository.renderList(saveRepositories, fullListRepositories);
                     Question.renderList(fullListRepositories, getCurrentPage());
                 }
-            });
+                if (!isAdd) {
+                    saveRepositories.splice(repositoryIndex, 1);
+                    localStorage.setItem('repositories', JSON.stringify(saveRepositories));
+                    Repository.renderList(saveRepositories, fullListRepositories);
+                    Question.renderList(fullListRepositories, getCurrentPage());
+                }
+            }, { once: true });
         });
     }
 
-    static removeRepository() {
-        let saveRepositories = JSON.parse(localStorage.getItem('repositories'));
+    static removeRepository(fullListRepositories) {
+        const fullRepositories = fullListRepositories;
         const removeButtons = document.querySelectorAll('.card-buttons__btn-remove');
         removeButtons.forEach(btn => {
             btn.addEventListener('click', event => {
+                let saveRepositories = JSON.parse(localStorage.getItem('repositories'));
                 const repositoryId = getRepositoryId(event);
                 saveRepositories.forEach((rep, index) => {
                     if (rep.id === repositoryId) {
                         saveRepositories.splice(index, 1);
                         localStorage.setItem('repositories', JSON.stringify(saveRepositories));
-                        Repository.renderList(saveRepositories);
+                        Repository.renderList(saveRepositories, fullRepositories);
                     }
                 });
             });
         });
     }
 
-    static renderList(saveListRepositories) {
+    static renderList(saveListRepositories, fullListRepositories = []) {
         const repositories = saveListRepositories || [];
+        const fullRepositories = fullListRepositories;
 
         const html = JSON.stringify(repositories) !== '[]'
             ? repositories.map(toCard).join('')
-            : `<p>Список пустой.</p>`;
+            : `<p class="col-12">Список пустой.</p>`;
 
-        const list = document.querySelector('.saved-repositories__body');
+        const list = document.querySelector('.saved-repositories__body .row');
 
         list.innerHTML = html;
-        Repository.removeRepository();
+        Repository.removeRepository(fullRepositories);
+        if (fullRepositories.length) Question.renderList(fullRepositories, getCurrentPage());
     }
 }
 
@@ -89,27 +108,15 @@ function toCard(repository) {
                                 Обновлено
                                 <span class="card-info__date-date">
                                     ${getLastUpdate(repository.pushed_at, repository)}
-
                                 </span>
                             </div>
                         </div>
                     </div>
-                    <div class="card-buttons"></div>
-                    <button type="button" class="btn-close card-buttons__btn card-buttons__btn-remove" aria-label="Close"></button>
+                    <div class="card-buttons">
+                        <button type="button" class="btn-close card-buttons__btn card-buttons__btn-remove" aria-label="Close"></button>
+                    </div>
                 </div>
             </div>
         </div>
     `
-}
-
-function getRepositoryId(event) {
-    return Number(event.target.closest('.card').getAttribute('data-repository-id'));
-}
-
-function getRepositoryObj(fullListRepositories, id) {
-    return fullListRepositories.find(rep => rep.id === id);
-}
-
-function getCurrentPage() {
-    return Number(document.querySelector('.page-link.active').getAttribute('data-page'));
 }

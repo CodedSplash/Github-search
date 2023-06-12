@@ -9,27 +9,33 @@
 </head>
 <body>
     <!-- Header -->
-    <header class="header">
+    <header class="header fixed-top bg-white">
         <div class="container">
             <button class="header__btn-offcanvas btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#listSavedRepositories" aria-controls="listSavedRepositories">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
                 </svg>
             </button>
-            <h1 class="header__title">Github поиск</h1>
-            <form class="d-flex header__form" id="form-search" role="search">
-                <input class="form-control header__form-input me-2" id="search-input" type="search" placeholder="Поиск..." aria-label="Поиск">
-                <button class="btn btn-primary header__form-btn-search" id="search-button" type="submit" aria-label="Кнопка поиск">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                    </svg>
-                </button>
-            </form>
-            <p class="header__error"></p>
         </div>
     </header>
     <!-- Main -->
     <main class="main">
+        <!-- Search -->
+        <section class="search">
+            <div class="container">
+                <h1 class="search__title">Github поиск</h1>
+                <form class="d-flex search__form" id="form-search" role="search">
+                    <input class="form-control search__form-input me-2" id="search-input" type="search" placeholder="Поиск..." aria-label="Поиск">
+                    <button class="btn btn-primary search__form-btn-search" id="search-button" type="submit" aria-label="Кнопка поиск">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                        </svg>
+                    </button>
+                </form>
+                <p class="search__error"></p>
+            </div>
+        </section>
+        <!-- Repositories -->
         <section class="repositories">
             <div class="container">
                 <div class="repositories__list row gap-4"></div>
@@ -43,8 +49,10 @@
             <h5 class="saved-repositories__title offcanvas-title" id="listSavedRepositoriesTitle">Список репозиториев</h5>
             <button type="button" class="saved-repositories__btn-close btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
-        <div class="offcanvas-body saved-repositories__body row gap-4">
-            <p>Список пустой.</p>
+        <div class="offcanvas-body saved-repositories__body">
+            <div class="row gap-4">
+                <p class="col-12">Список пустой.</p>
+            </div>
         </div>
     </div>
 </body>

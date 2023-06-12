@@ -1,4 +1,4 @@
-import {getLastUpdate, getStars, toBadge} from "./cardFunctions";
+import {getLastUpdate, getStars, toBadge, isSaveButton} from "./utils";
 import {Repository} from "./repository";
 
 export class Question {
@@ -17,9 +17,11 @@ export class Question {
         const end = start + 10;
         const outputRepositories = repositories.slice(start, end);
 
+        outputRepositories.forEach(rep => rep.isSaveButton = false);
+
         isSaveButton(outputRepositories);
 
-        const html = repositories.length
+        const html = outputRepositories.length
             ? outputRepositories.map(toCard).join('')
             : `<p style="font-size: 24px">Ничего не найдено</p>`;
 
@@ -58,7 +60,7 @@ export class Question {
         paginationContainer.innerHTML = html;
 
         const paginationButtons = document.querySelectorAll('.page-link');
-        paginationButtons.forEach(btn => btn.addEventListener('click', (event) => {
+        paginationButtons.forEach(btn => btn.addEventListener('click', event => {
             const selectedPage = Number(event.target.getAttribute('data-page'));
             document.body.scrollTop = document.documentElement.scrollTop = 0;
             Question.renderList(repositoryList, selectedPage);
@@ -107,8 +109,9 @@ function toCard(question) {
                                 </div>
                             </div>
                         </div>
-                        <div class="card-buttons"></div>
-                        ${toSaveButton(question.isSaveButton)}
+                        <div class="card-buttons">
+                            ${toSaveButton(question.isSaveButton)}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -147,16 +150,6 @@ function toSaveButton(isSaveButton) {
             </button>
         `;
     }
-}
-
-function isSaveButton(outputRepositories) {
-    const saveRepositories = JSON.parse(localStorage.getItem('repositories')) || [];
-
-    saveRepositories.forEach(rep => {
-        outputRepositories.forEach(outputRep => {
-            if (rep.id === outputRep.id) outputRep.isSaveButton = true;
-        })
-    });
 }
 
 function toButtonsPagination(currentPage, totalPages) {

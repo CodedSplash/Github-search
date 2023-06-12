@@ -13,7 +13,7 @@ import {Repository} from "./repository";
 const inputElement = document.getElementById('search-input');
 const sendElement = document.getElementById('search-button');
 const formElement = document.getElementById('form-search');
-const outputError = document.querySelector('.header__error');
+const outputError = document.querySelector('.search__error');
 
 document.addEventListener('DOMContentLoaded', event =>
     Repository.renderList(JSON.parse(localStorage.getItem('repositories'))));
@@ -59,11 +59,11 @@ function submitFormHandler(event) {
             })
             .then(response => Question.renderList(fullListRepositories, currentPage))
             .then(response => Question.renderPagination(currentPage, totalPages, fullListRepositories))
+            .then(response => Repository.renderList(JSON.parse(localStorage.getItem('repositories')), fullListRepositories))
             .then(response => {
                 changeButtonSearch(sendElement, 'search');
                 isDisabledButton(sendElement);
             })
-            .then(response => Repository.addToLocaleStorage(fullListRepositories))
             .catch(e => {
                 outputError.innerText = e;
                 changeButtonSearch(sendElement, 'search');
