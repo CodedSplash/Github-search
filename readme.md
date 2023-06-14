@@ -13,7 +13,7 @@
     <a href="https://github.com/CodedSplash/Github-search"><strong>Explore the docs »</strong></a>
     <br/>
     <br/>
-    <a href="https://github.com/CodedSplash/Github-search">View Demo</a>
+    <a href="https://codedsplash.github.io/Github-search/">View Demo</a>
     .
     <a href="https://github.com/CodedSplash/Github-search/issues">Report Bug</a>
   </p>
@@ -52,4 +52,4 @@ Distributed under the MIT License. See [LICENSE](https://github.com/CodedSplash/
 
 ## Author
 
-* **Ivan Shchukin** - *Information systems and programming student* - [Ivan Shchukin](https://github.com/CodedSplash) - *Created a Github search site*
+**Ivan Shchukin** - *Information systems and programming student* - [Ivan Shchukin](https://github.com/CodedSplash) - *Created a Github search site*
