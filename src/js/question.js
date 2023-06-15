@@ -25,7 +25,7 @@ export class Question {
             ? outputRepositories.map(toCard).join('')
             : `<p style="font-size: 24px">Ничего не найдено</p>`;
 
-        const list = document.querySelector('.row');
+        const list = document.querySelector('.repositories__list');
         list.innerHTML = html;
 
         Repository.addToLocaleStorage(repositoryList);
@@ -54,7 +54,7 @@ export class Question {
                 <li class="page-item"><button class="page-link${currentPage === totalPages ? ' disabled' : ''}" data-page="${currentPage + 1}" ${currentPage === totalPages ? 'disabled' : ''}>Вперёд</button></li>
             </ul>
         `
-        : '';
+            : '';
 
         const paginationContainer = document.querySelector('.pagination-container');
         paginationContainer.innerHTML = html;
@@ -65,7 +65,7 @@ export class Question {
             document.body.scrollTop = document.documentElement.scrollTop = 0;
             Question.renderList(repositoryList, selectedPage);
             Question.renderPagination(selectedPage, totalPages, repositoryList);
-        }))
+        }, { once: true }));
     }
 }
 

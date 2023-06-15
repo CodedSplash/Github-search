@@ -10,20 +10,20 @@ import {
 import {Repository} from "./repository";
 
 
-const inputElement = document.getElementById('search-input');
-const sendElement = document.getElementById('search-button');
-const formElement = document.getElementById('form-search');
-const outputError = document.querySelector('.search__error');
+const inputElement = document.getElementById('search-input'),
+    sendElement = document.getElementById('search-button'),
+    formElement = document.getElementById('form-search'),
+    outputError = document.querySelector('.search__error');
 
 document.addEventListener('DOMContentLoaded', event =>
-    Repository.renderList(JSON.parse(localStorage.getItem('repositories'))));
+    Repository.renderList(JSON.parse(localStorage.getItem('repositories'))), { once: true });
 
 formElement.addEventListener('submit', submitFormHandler);
 
-let fullListRepositories = [];
-let totalQueryPages = 1;
-let totalPages = 1;
-let currentPage = 1;
+let fullListRepositories = [],
+    totalQueryPages = 1,
+    totalPages = 1,
+    currentPage = 1;
 
 
 function submitFormHandler(event) {
@@ -39,9 +39,7 @@ function submitFormHandler(event) {
                 currentPage = 1;
                 totalPages = getTotalPages(response.total_count);
                 totalQueryPages = getTotalQueryPages(response.total_count);
-                response.items.forEach(rep => {
-                    fullListRepositories.push(rep);
-                })
+                response.items.forEach(rep => fullListRepositories.push(rep));
             })
             .then(response => {
                 let requestList = [];
@@ -53,9 +51,7 @@ function submitFormHandler(event) {
             })
             .then(response => Promise.all(response))
             .then(response => {
-                response.forEach(item => {
-                    item.items.forEach(rep => fullListRepositories.push(rep));
-                })
+                response.forEach(item => item.items.forEach(rep => fullListRepositories.push(rep)));
             })
             .then(response => Question.renderList(fullListRepositories, currentPage))
             .then(response => Question.renderPagination(currentPage, totalPages, fullListRepositories))
