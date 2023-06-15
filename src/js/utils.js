@@ -51,7 +51,7 @@ export function getCurrentPage() {
 //=== Card functions =====================================================================================================================================================
 
 export function toBadge(topic, index) {
-    return !(index > 4)
+    return index < 5
         ? `<a href="https://github.com/topics/${topic}" target="_blank" class="badge rounded-pill text-bg-primary">${topic}</a>`
         : '';
 }
